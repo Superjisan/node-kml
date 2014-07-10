@@ -8,27 +8,39 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-var ejs = require('ejs');
-var fs = require('fs');
+var swig = require('swig');
 
-//create a http server on port 8000
-http.createServer(function (req, res) {
-    //tell the client the document is XML
-    res.writeHead(200, {'Content-Type': 'text/xml'});
-    //read our template file
-    fs.readFile('template.ejs', 'utf8', function (err, template) {
-        //render our template file with the included varables to change
-        var content = ejs.render(template,{
-            name:"test name",
-            description:"this is the description",
-            coordinates:"-122.0822035425683,37.42228990140251,0"
-        });
-        res.write(content);
-        res.end()
-    });
+var app = express();
 
-    //write the rendered template to the client
+// all environments
+app.set('port', process.env.PORT || 3000);
+app.set('views', path.join(__dirname, 'views'));
 
-    }).listen(8000);
+// Swig Setup
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+swig.setDefaults({ cache: false });
 
-console.log('Server listening at at http://localhost:8000/');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(express.bodyParser()); //to receive proper data via ajax
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+
+app.get('/', routes.index);
+
+//set up bower access on the front-end
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
