@@ -5,11 +5,12 @@
 
 var express = require('express');
 var routes = require('./routes');
-var queensCoordinates = require('/coordinates/QueensDistrictCoordinates.js')
+var queensCoordinates = require('./coordinates/QueensDistrictCoordinates.js')
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var swig = require('swig');
+var util = require('util')
 
 var app = express();
 
@@ -38,10 +39,12 @@ if ('development' == app.get('env')) {
 
 
 app.get('/', routes.index);
-
+app.get('/queens', routes.queens);
 //set up bower access on the front-end
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+console.log("queensCoordinates", util.inspect(queensCoordinates.data, false, null));

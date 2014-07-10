@@ -12,3 +12,7 @@ a {
     margin: 0px;
     padding: 0px
 }
+
+#queens a{
+  text-decoration: none;
+}
