@@ -5,6 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes');
+var queensCoordinates = require('/coordinates/QueensDistrictCoordinates.js')
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
