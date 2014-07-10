@@ -1,0 +1,21 @@
+{
+  "name": "node-kml",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Superjisan/node-kml",
+  "authors": [
+    "Jisan Zaman <jzthegreat@gmail.com>"
+  ],
+  "description": "kml to googleMaps converter",
+  "main": "app.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.2.0"
+  }
+}

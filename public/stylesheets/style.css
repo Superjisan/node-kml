@@ -7,8 +7,8 @@ a {
   color: #00B7FF;
 }
 
-html, body, #map-canvas {
-        height: 100%;
-        margin: 0px;
-        padding: 0px
+#map-canvas {
+    height: 500px;
+    margin: 0px;
+    padding: 0px
 }
