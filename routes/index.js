@@ -3,7 +3,7 @@
  * GET home page.
  */
 
-var queens = require("../coordinates/QueensDistrictCoordinates")
+var queens = require("../coordinates/QueensCoordinates")
 var util = require('util')
 
 exports.index = function(req, res){
@@ -12,6 +12,6 @@ exports.index = function(req, res){
 
 
 exports.queens = function(req,res){
-  var QueensDistrictCoordinates = queens.data;
+  var QueensDistrictCoordinates = queens.data.features;
   res.json(200, {queens: QueensDistrictCoordinates});
 }
