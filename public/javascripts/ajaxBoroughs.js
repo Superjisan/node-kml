@@ -10,8 +10,8 @@ $(function(){
       url: 'http://localhost:3000/queens'
     }).done(function(data){
        console.log("data from the server:", data);
-       google.maps.event.addDomListener(window, 'load', mapRefresh(data.queens[0], data.queens[1]));
-       var districts = createDistrictVariables(data.queens);
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons));
+       var districts = createDistrictVariables(data.polygons);
        console.log("districtArray and length:", districts, districts.length);
     })
   }) //end of on queens click
@@ -24,19 +24,14 @@ function mapRefresh(data) {
 
   var map = newMap(mapOptions);
 
-  var district, district2;
+  var districts = createDistrictVariables(data);
 
-  var districtCoords = PolygonCoordinatesArr(data);
-
-  district = constructPolygon(districtCoords);
-
-  district.setMap(map);
-
-  // var district2Coords = PolygonCoordinatesArr(data2);
-
-  // district2  = constructPolygon(district2Coords);
-
-  // district2.setMap(map)
+  for (var i = 0; i < data.length ; i++){
+    var district;
+    var districtCoords = PolygonCoordinatesArr(data[i]);
+    district = constructPolygon(districtCoords);
+    district.setMap(map);
+  }
 
 }
 
@@ -54,7 +49,7 @@ function createDistrictVariables(data){
 // a function to return the initial map attributes
 function makeMapOptions(){
   var result = {
-    zoom: 11,
+    zoom: 10,
     center: new google.maps.LatLng(40.78013, -73.79871),
     mapTypeID: google.maps.MapTypeId.TERRAIN
   };
@@ -88,7 +83,8 @@ function constructPolygon(coordinates){
     strokeColor: 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')',
     strokeOpacity: 0.8,
     strokeWeight: 2,
-    fillOpacity: 0.4
+    fillOpacity: 0.2,
+    fillColor: '#FF0000',
   })
 }
 
