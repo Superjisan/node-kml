@@ -3,6 +3,10 @@
 {% block title %} Node KML {%endblock%}
 
 {% block content %}
+<div id="panel">
+  <input id="address" type="textbox" value="New York, NY">
+  <input type="button" value="Geocode" onclick="codeAddress()">
+</div>
 <div id="map-canvas"></div>
 <button id="queens">Queens</button>
 {% endblock %}

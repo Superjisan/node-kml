@@ -1,3 +1,6 @@
+var map, geocoder;
+
+
 $(function(){
   //on queens click
   $("#queens").on("click", function(e){
@@ -17,11 +20,13 @@ $(function(){
 });
 
 
+
 function mapRefresh(polygonData, pointData) {
 
   var mapOptions = makeMapOptions();
 
-  var map = newMap(mapOptions);
+  map = newMap(mapOptions);
+  geocoder = new google.maps.Geocoder()
 
   var districts = createDistrictVariables(polygonData);
 
@@ -118,5 +123,20 @@ function constructPolygon(coordinates){
     fillOpacity: 0.2,
     fillColor: '#FF0000',
   })
+}
+
+function codeAddress() {
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      map.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+      });
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
 }
 

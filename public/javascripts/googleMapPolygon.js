@@ -1,3 +1,6 @@
+var map, geocoder;
+
+
 function initialize() {
   var mapOptions = {
     zoom: 11,
@@ -7,7 +10,7 @@ function initialize() {
 
   var bermudaTriangle;
 
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
+   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
 
   // Define the LatLng coordinates for the polygon's path.
@@ -18,6 +21,7 @@ function initialize() {
     new google.maps.LatLng(25.774252, -80.190262)
   ];
 
+  geocoder = new google.maps.Geocoder()
 
   //Construct the polygon.
   // bermudaTriangle = new google.maps.Polygon({
@@ -33,3 +37,18 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+function codeAddress() {
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      map.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+      });
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
