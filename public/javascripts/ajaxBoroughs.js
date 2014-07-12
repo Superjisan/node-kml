@@ -1,4 +1,4 @@
-var map, geocoder;
+var map, geocoder, inWhichDistrict;
 
 
 $(function(){
@@ -19,8 +19,7 @@ $(function(){
 
 });
 
-
-
+//refreshes the map after ajax request is completed with server data
 function mapRefresh(polygonData, pointData) {
 
   var mapOptions = makeMapOptions();
@@ -28,16 +27,35 @@ function mapRefresh(polygonData, pointData) {
   map = newMap(mapOptions);
   geocoder = new google.maps.Geocoder()
 
-  var districts = createDistrictVariables(polygonData);
+  var districts = [];
 
+  var district;
   //construct all distrcits
   for (var i = 0; i < polygonData.length ; i++){
-    var district;
-    var districtCoords = PolygonCoordinatesArr(polygonData[i]);
-    district = constructPolygon(districtCoords);
-    district.setMap(map);
+    setPolygonToMap(polygonData[i], i);
   }
 
+  function setPolygonToMap(polygonObj, index) {
+
+      var districtCoords = PolygonCoordinatesArr(polygonObj);
+      var districtNum = polygonObj.properties.name;
+      console.log("districtNum", districtNum)
+      districts[index] = constructPolygon(districtCoords);
+      districts[index].setMap(map);
+
+      google.maps.event.addListener(districts[index], 'click', function(e) {
+        var result;
+        if (google.maps.geometry.poly.containsLocation(e.latLng, districts[index])) {
+          inWhichDistrict = districtNum;
+          console.log("inWhichDistrict: ",inWhichDistrict)
+        } else {
+          console.log("not in any district")
+        }
+     })
+  }
+
+
+  //construct all district labels
   for (var j = 0; j < pointData.length; j++){
     var point;
     var pointCoords = pointCoordinates(pointData[j]);
@@ -45,6 +63,8 @@ function mapRefresh(polygonData, pointData) {
     createPoint(pointCoords, map, districtNum)
   }
 }
+
+
 
 //construct variables to use in map later
 function createDistrictVariables(data){
@@ -76,7 +96,7 @@ function newMap(mapOptions){
 //get the coordinates of the district point flag
 function pointCoordinates(pointObj){
   var result;
-  console.log("geometry coordinates:", pointObj.geometry.coordinates);
+
   var coordinates = pointObj.geometry.coordinates;
   result = new google.maps.LatLng(coordinates[1], coordinates[0]);
   return result
@@ -113,15 +133,18 @@ function PolygonCoordinatesArr(districtObj){
   return result;
 }
 
+
+
 //construct a polygon with the given coordinates
 function constructPolygon(coordinates){
+  var randomColor = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
   return new google.maps.Polygon({
     paths: coordinates,
-    strokeColor: 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')',
+    strokeColor: randomColor,
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillOpacity: 0.2,
-    fillColor: '#FF0000',
+    fillColor: randomColor,
   })
 }
 
