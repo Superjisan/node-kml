@@ -11,16 +11,17 @@ $(function(){
       url: 'http://localhost:3000/queens'
     }).done(function(data){
        console.log("data from the server:", data);
-       google.maps.event.addDomListener(window, 'load', mapRefresh(data.queens[0]))
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.queens[0], data.queens[1]))
     })
   }) //end of on queens click
 
 });
 
-function mapRefresh(data) {
+function mapRefresh(data,data2) {
+
   var mapOptions = makeMapOptions();
 
-  var district;
+  var district, district2;
 
   var map = newMap(mapOptions);
 
@@ -30,8 +31,15 @@ function mapRefresh(data) {
 
   district.setMap(map);
 
+  var district2Coords = PolygonCoordinatesArr(data2);
+
+  district2  = constructPolygon(district2Coords);
+
+  district2.setMap(map)
+
 }
 
+// a function to return the initial map attributes
 function makeMapOptions(){
   var result = {
     zoom: 11,
@@ -41,6 +49,7 @@ function makeMapOptions(){
    return result
 }
 
+//returns a new map
 function newMap(mapOptions){
   return new google.maps.Map(document.getElementById('map-canvas'),mapOptions)
 }
@@ -49,23 +58,26 @@ function newMap(mapOptions){
 //turns a district data object and turns it into proper coordinate format
 function PolygonCoordinatesArr(districtObj){
   var result= [];
-  var coordinates = districtObj.geometry.coordinates[0]
+  var coordinates = districtObj.geometry.coordinates[0];
+
+  //
   coordinates.forEach(function(elem){
     console.log("loop element:", elem[1], elem[0])
     result.push(new google.maps.LatLng(elem[1], elem[0]));
   })
-  console.log("result coordinates:", result)
-  return result
+
+  return result;
 }
 
+//construct a polygon with the given coordinates
 function constructPolygon(coordinates){
   console.log("coordinates", coordinates)
   return new google.maps.Polygon({
     paths: coordinates,
-    strokeColor: '#FF0000',
+    strokeColor: 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')',
     strokeOpacity: 0.8,
     strokeWeight: 2,
-    fillOpacity: 0.35
+    fillOpacity: 0.4
   })
 }
 
