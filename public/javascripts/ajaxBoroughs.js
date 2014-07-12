@@ -10,29 +10,35 @@ $(function(){
       url: 'http://localhost:3000/queens'
     }).done(function(data){
        console.log("data from the server:", data);
-       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons));
-       var districts = createDistrictVariables(data.polygons);
-       console.log("districtArray and length:", districts, districts.length);
-    })
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons, data.points));
+     })
   }) //end of on queens click
 
 });
 
-function mapRefresh(data) {
+
+function mapRefresh(polygonData, pointData) {
 
   var mapOptions = makeMapOptions();
 
   var map = newMap(mapOptions);
 
-  var districts = createDistrictVariables(data);
+  var districts = createDistrictVariables(polygonData);
 
-  for (var i = 0; i < data.length ; i++){
+  //construct all distrcits
+  for (var i = 0; i < polygonData.length ; i++){
     var district;
-    var districtCoords = PolygonCoordinatesArr(data[i]);
+    var districtCoords = PolygonCoordinatesArr(polygonData[i]);
     district = constructPolygon(districtCoords);
     district.setMap(map);
   }
 
+  for (var j = 0; j < pointData.length; j++){
+    var point;
+    var pointCoords = pointCoordinates(pointData[j]);
+    var districtNum = pointData[j].properties.name;
+    createPoint(pointCoords, map, districtNum)
+  }
 }
 
 //construct variables to use in map later
@@ -62,22 +68,48 @@ function newMap(mapOptions){
 }
 
 
+//get the coordinates of the district point flag
+function pointCoordinates(pointObj){
+  var result;
+  console.log("geometry coordinates:", pointObj.geometry.coordinates);
+  var coordinates = pointObj.geometry.coordinates;
+  result = new google.maps.LatLng(coordinates[1], coordinates[0]);
+  return result
+};
+
+function createImage(districtNum){
+
+  var img = {url: "http://google-maps-icons.googlecode.com/files/red"+districtNum+".png",
+             size: new google.maps.Size(27,27),
+             origin: new google.maps.Point(0,0),
+             anchor: new google.maps.Point(0,27)
+            }
+  return img
+}
+
+function createPoint(LatLng, map, districtNum){
+  var marker = new google.maps.Marker({
+    position: LatLng,
+    map: map,
+    icon: createImage(districtNum),
+    zIndex: 4,
+  })
+}
+
 //turns a district data object and turns it into proper coordinate format
 function PolygonCoordinatesArr(districtObj){
   var result= [];
   var coordinates = districtObj.geometry.coordinates[0];
 
-  //
+  //set each coordinate border
   coordinates.forEach(function(elem){
     result.push(new google.maps.LatLng(elem[1], elem[0]));
   })
-
   return result;
 }
 
 //construct a polygon with the given coordinates
 function constructPolygon(coordinates){
-  console.log("coordinates", coordinates)
   return new google.maps.Polygon({
     paths: coordinates,
     strokeColor: 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')',
