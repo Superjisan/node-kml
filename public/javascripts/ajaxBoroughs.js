@@ -1,5 +1,4 @@
 $(function(){
-
   //on queens click
   $("#queens").on("click", function(e){
     e.preventDefault();
@@ -11,19 +10,21 @@ $(function(){
       url: 'http://localhost:3000/queens'
     }).done(function(data){
        console.log("data from the server:", data);
-       google.maps.event.addDomListener(window, 'load', mapRefresh(data.queens[0], data.queens[1]))
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.queens[0], data.queens[1]));
+       var districts = createDistrictVariables(data.queens);
+       console.log("districtArray and length:", districts, districts.length);
     })
   }) //end of on queens click
 
 });
 
-function mapRefresh(data,data2) {
+function mapRefresh(data) {
 
   var mapOptions = makeMapOptions();
 
-  var district, district2;
-
   var map = newMap(mapOptions);
+
+  var district, district2;
 
   var districtCoords = PolygonCoordinatesArr(data);
 
@@ -31,12 +32,23 @@ function mapRefresh(data,data2) {
 
   district.setMap(map);
 
-  var district2Coords = PolygonCoordinatesArr(data2);
+  // var district2Coords = PolygonCoordinatesArr(data2);
 
-  district2  = constructPolygon(district2Coords);
+  // district2  = constructPolygon(district2Coords);
 
-  district2.setMap(map)
+  // district2.setMap(map)
 
+}
+
+//construct variables to use in map later
+function createDistrictVariables(data){
+  var districts = [];
+
+  for(var i = 0; i < data.length; i++){
+    var districtName = data[i].properties.name
+    districts[i] = "district" + districtName;
+  }
+  return districts
 }
 
 // a function to return the initial map attributes
@@ -62,7 +74,6 @@ function PolygonCoordinatesArr(districtObj){
 
   //
   coordinates.forEach(function(elem){
-    console.log("loop element:", elem[1], elem[0])
     result.push(new google.maps.LatLng(elem[1], elem[0]));
   })
 
