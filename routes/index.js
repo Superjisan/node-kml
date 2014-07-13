@@ -73,7 +73,7 @@ exports.manhattan = function(req,res){
   for (var i = 0; i < ManhattanDistrictCoordinates.length; i++){
     if (ManhattanDistrictCoordinates[i].geometry.type === "Polygon"){
         polygons.push(ManhattanDistrictCoordinates[i])
-    } else {
+    } else if(ManhattanDistrictCoordinates[i].geometry.type === "Point") {
       points.push(ManhattanDistrictCoordinates[i])
     }
   }

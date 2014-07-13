@@ -96,12 +96,11 @@ function mapRefresh(polygonData, pointData) {
 
       var districtCoords = PolygonCoordinatesArr(polygonObj);
       var districtNum = polygonObj.properties.name;
-      console.log("districtNum", districtNum)
+
       districts[index] = constructPolygon(districtCoords);
       districts[index].setMap(map);
 
       google.maps.event.addListener(districts[index], 'click', function(e) {
-        var result;
         if (google.maps.geometry.poly.containsLocation(e.latLng, districts[index])) {
           inWhichDistrict = districtNum;
           console.log("inWhichDistrict: ",inWhichDistrict)
