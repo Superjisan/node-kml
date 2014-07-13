@@ -17,10 +17,6 @@ $(function(){
      })
   }) //end of on queens click
 
-});
-
-$(function(){
-  //on brooklyn click
   $("#brooklyn").on("click", function(e){
     e.preventDefault();
 
@@ -35,7 +31,50 @@ $(function(){
      })
   }) //end of on brooklyn click
 
+  $("#manhattan").on("click", function(e){
+    e.preventDefault();
+
+    $.ajax({
+      context: $("#map-canvas"),
+      type: 'GET',
+      content: 'application/json',
+      url: 'http://localhost:3000/manhattan'
+    }).done(function(data){
+       console.log("data from the server:", data);
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons, data.points));
+     })
+  }) //end of on brooklyn click
+
+  $("#bronx").on("click", function(e){
+    e.preventDefault();
+
+    $.ajax({
+      context: $("#map-canvas"),
+      type: 'GET',
+      content: 'application/json',
+      url: 'http://localhost:3000/bronx'
+    }).done(function(data){
+       console.log("data from the server:", data);
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons, data.points));
+     })
+  }) //end of on brooklyn click
+
+  $("#statenisland").on("click", function(e){
+    e.preventDefault();
+
+    $.ajax({
+      context: $("#map-canvas"),
+      type: 'GET',
+      content: 'application/json',
+      url: 'http://localhost:3000/statenisland'
+    }).done(function(data){
+       console.log("data from the server:", data);
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons, data.points));
+     })
+  }) //end of on brooklyn click
 });
+
+
 
 //refreshes the map after ajax request is completed with server data
 function mapRefresh(polygonData, pointData) {

@@ -41,6 +41,10 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/queens', routes.queens);
 app.get('/brooklyn', routes.brooklyn);
+app.get('/bronx', routes.bronx);
+app.get('/manhattan', routes.manhattan);
+app.get('/statenisland', routes.statenisland);
+
 app.get('/state', routes.state)
 //set up bower access on the front-end
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
