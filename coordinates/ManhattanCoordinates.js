@@ -1,3 +1,6 @@
+//TO DO: Fix District 1 and other coordinates
+//Check KML vs. geoJSON output
+
 exports.data = {
     "type": "FeatureCollection",
     "features": [

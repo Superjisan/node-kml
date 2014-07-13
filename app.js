@@ -10,7 +10,17 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var swig = require('swig');
-var util = require('util')
+var util = require('util');
+var apiKeys = require('./apiKeys');
+var NYTDistricts = require('./nytdistricts');
+var nytAPIkey = apiKeys.nytAPIkey
+var nytdistricts = new NYTDistricts(nytAPIkey);
+
+nytdistricts.getDistricts(40.7115760,-73.7972060, function(err,data){
+  if(err) throw err;
+  console.log("my districts: ",data)
+})
+
 
 var app = express();
 
