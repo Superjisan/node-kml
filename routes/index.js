@@ -3,17 +3,23 @@
  * GET home page.
  */
 
-var queens = require("../coordinates/QueensCoordinates")
+
 var util = require('util')
 var OpenStates = require('openstates');
+var apiKeys = require('../apiKeys')
 
-
+//coordinates
+var queens = require("../coordinates/QueensCoordinates");
+var bronx = require("../coordinates/BronxCoordinates");
+var brooklyn = require("../coordinates/BrooklynCoordinates");
+var statenisland = require("../coordinates/StatenIslandCoordinates");
+var manhattan = require("../coordinates/ManhattanCoordinates");
 
 exports.index = function(req, res){
   res.render('index');
 };
 
-
+//TO DO: REFACTOR
 exports.queens = function(req,res){
   var QueensDistrictCoordinates = queens.data.features;
   var polygons = [];
@@ -26,11 +32,26 @@ exports.queens = function(req,res){
       points.push(QueensDistrictCoordinates[i])
     }
   }
-  res.json(200, {queens: QueensDistrictCoordinates, polygons : polygons, points: points});
+  res.json(200, { polygons : polygons, points: points});
+}
+
+exports.brooklyn = function(req,res){
+  var BrooklynDistrictCoordinates = brooklyn.data.features;
+  var polygons = [];
+  var points = [];
+  //loop to determine if object is polygon or point
+  for (var i = 0; i < BrooklynDistrictCoordinates.length; i++){
+    if (BrooklynDistrictCoordinates[i].geometry.type === "Polygon"){
+        polygons.push(BrooklynDistrictCoordinates[i])
+    } else {
+      points.push(BrooklynDistrictCoordinates[i])
+    }
+  }
+  res.json(200, { polygons : polygons, points: points});
 }
 
 exports.state = function(req,res){
-  var openstates = new OpenStates('e5242fc0a55f4f3ba952a7071e2c42d6');
+  var openstates = new OpenStates(apiKeys.openstatesAPIkeyrs);
   // openstates.geoLookup(40.7115760,-73.7972060, function(err, data) {
   //   if(err){console.log(err)}
   //   else{

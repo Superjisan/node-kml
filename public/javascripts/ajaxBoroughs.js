@@ -19,6 +19,24 @@ $(function(){
 
 });
 
+$(function(){
+  //on brooklyn click
+  $("#brooklyn").on("click", function(e){
+    e.preventDefault();
+
+    $.ajax({
+      context: $("#map-canvas"),
+      type: 'GET',
+      content: 'application/json',
+      url: 'http://localhost:3000/brooklyn'
+    }).done(function(data){
+       console.log("data from the server:", data);
+       google.maps.event.addDomListener(window, 'load', mapRefresh(data.polygons, data.points));
+     })
+  }) //end of on brooklyn click
+
+});
+
 //refreshes the map after ajax request is completed with server data
 function mapRefresh(polygonData, pointData) {
 
@@ -151,6 +169,7 @@ function constructPolygon(coordinates){
 function codeAddress() {
   var address = document.getElementById('address').value;
   geocoder.geocode( { 'address': address}, function(results, status) {
+    console.log("results", results)
     if (status == google.maps.GeocoderStatus.OK) {
       map.setCenter(results[0].geometry.location);
       var marker = new google.maps.Marker({
