@@ -48,3 +48,13 @@ NYTDistricts.prototype.getDistricts = function(lat, long, callback){
   this.makeRequest(lat,long, callback)
 }
 
+NYTDistricts.prototype.getCityCouncilDistrict = function(lat, long, callback){
+  this.getDistricts(lat,long, function(err, data){
+    if (err) throw err;
+    for (var i = 0; i < data.results.length; i++){
+      if(data.results[i].level === 'City Council'){
+        return  callback(null, data.results[i])
+      }
+    }
+  })
+}
